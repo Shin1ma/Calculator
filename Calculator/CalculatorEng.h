@@ -15,6 +15,8 @@ enum OperationType
 {
     ADDITION,
     SUBTRACTION,
+    MOLTIPLICATION,
+    DIVISION,
 };
 
 
@@ -52,6 +54,7 @@ public:
     void printVect();
     void resetVect();   //deletes the vector
     int resolveVect();  //resolves the operations
+    void resolveVectMolt();
     bool checkVect(); //checks entire vector for errors
 };
 

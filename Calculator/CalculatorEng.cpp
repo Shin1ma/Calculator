@@ -24,6 +24,14 @@ void CalculatorEng::initNode(Node *node) {
 			node->v_char = '-';
 			break;
 
+		case MOLTIPLICATION:
+			node->v_char = '*';
+			break;
+
+		case DIVISION:
+			node->v_char = '/';
+			break;
+
 		default:
 			break;
 		}
@@ -106,6 +114,41 @@ void CalculatorEng::printVect() {
 	}
 }
 
+void CalculatorEng::resolveVectMolt() {
+	int temp;
+	Node resultnode;
+	resultnode.Type = NUMBER;
+	temp = 0;
+
+	while(temp < VNodes.size() - 1) {
+		
+		if (VNodes[temp].Type == OPERATION) {
+			if (VNodes[temp].SubType == MOLTIPLICATION) {
+				resultnode.value = VNodes[temp - 1].value * VNodes[temp + 1].value;
+				resultnode.Position = temp - 1;
+				initNode(&resultnode);
+				VNodes.erase(VNodes.begin() + temp);
+				VNodes.erase(VNodes.begin() + temp);
+				VNodes[temp - 1] = resultnode;
+				temp =- 1;
+				VecLenght -= 2;
+			}
+			else if (VNodes[temp].SubType == DIVISION) {
+				resultnode.value = VNodes[temp - 1].value / VNodes[temp + 1].value;
+				resultnode.Position = temp - 1;
+				initNode(&resultnode);
+				VNodes.erase(VNodes.begin() + temp);
+				VNodes.erase(VNodes.begin() + temp);
+				VNodes[temp - 1] = resultnode;
+				temp = -1;
+				VecLenght -= 2;
+			}
+		}
+		temp += 1;
+	}
+}
+
+
 int CalculatorEng::resolveVect() {
 
 	if (!(checkVect())) {
@@ -116,7 +159,7 @@ int CalculatorEng::resolveVect() {
 		return 2147483647;		//gonna process this as an error in main, pretty sloppy but gets the job done
 	}
 
-
+	resolveVectMolt();
 
 	int ResVal = VNodes[0].value;
 	int temp = 0;

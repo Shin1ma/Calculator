@@ -29,7 +29,7 @@ int main()
         int choice = 0;
 
         std::cout << "\nwelcome to calculator.cpp, please enter a choice:\n";
-        std::cout << "1 new element\n2 replace element\n3 delete element\n4 resolve operation\n5 reset operation\n6 exit\n\n";
+        std::cout << "1 new element\n2 replace element\n3 delete element\n4 resolve operation\n5 reset operation\n6 exit\n7 DEBUG MOLT\n\n";
         std::cin >> choice;
         
         InputHandler(choice, ogg);
@@ -109,8 +109,8 @@ void InputHandler(int choice, CalculatorEng ogg) {
         }
         if (type == 1) {
             std::cout << "\n\nchoose an option:\n";
-            std::cout << "0  addition\n1  subtraction\n";
-            std::cin >> subtype; if (subtype != 0 && subtype != 1) { std::cout << "enter a valid number\n"; system("pause"); break; }
+            std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
+            std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); break; }
             value = NULL;
             ogg.addNode(type, subtype, value);
             system("pause");
@@ -134,8 +134,8 @@ void InputHandler(int choice, CalculatorEng ogg) {
         }
         if (type == 1) {
             std::cout << "\n\nchoose an option:\n";
-            std::cout << "0  addition\n1  subtraction\n";
-            std::cin >> subtype; if (subtype != 0 && subtype != 1) { std::cout << "enter a valid number\n"; system("pause"); break; }
+            std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
+            std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); break; }
             value = NULL;
             ogg.replaceNode(posr, type, subtype, value);
         }
@@ -167,6 +167,10 @@ void InputHandler(int choice, CalculatorEng ogg) {
 
     case 6:
         exit(0);
+        break;
+
+    case 7:
+        ogg.resolveVectMolt();
         break;
 
     default:
