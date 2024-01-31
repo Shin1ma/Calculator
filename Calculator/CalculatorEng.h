@@ -26,7 +26,7 @@ struct Node
     int value; //if number
     int SubType; //operation only subtype (addition, subtraction ecc...)
     int Position; //position in Node vector
-    std::string v_char;
+    std::string v_char; //init values (lookup init function)
     bool Init = false;
 };
 
@@ -54,7 +54,7 @@ public:
     void printVect();
     void resetVect();   //deletes the vector
     int resolveVect();  //resolves the operations
-    void resolveVectMolt();
+    void resolveVectMolt();     //resolves the moltiplication this is in order to do multiplication early 
     bool checkVect(); //checks entire vector for errors
 };
 

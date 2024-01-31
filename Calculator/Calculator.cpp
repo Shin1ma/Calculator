@@ -3,15 +3,30 @@
 #include <iostream>
 #include "CalculatorEng.h"
 
-void InputHandler(int choice, CalculatorEng ogg);       //handles input, creates new nodes ecc...
-void CalculatorDisplay();       //""graphic"" interface
-void Update();      //updates the display
 
-CalculatorEng ogg;
+//Questo progetto è dedicato alla sgnra Barbara, Grazia frizzi pazzi e marinella perchè no
+
+
+void InputHandler(int choice, CalculatorEng instance);       //handles input, creates new nodes ecc...
+void CalculatorDisplay();       //a simple text display for the calculator
+void UpdateDisplay();      //updates the display
+
+//function taking and handling input
+void InputAddNode();
+void InputReplaceNode();
+void InputDeleteNode();
+void InputResolveVect();
+void InputResetVect();
+
+//object instance
+CalculatorEng instance;
+
+//temporary values to measure out border(* contorn) on the display
 int temp1 = 1;
 int temp2 = 1;
 
-int size = 0;
+
+int size = 0;   //variable to compare to vector size
 
 
 
@@ -20,7 +35,7 @@ int main()
     
 
     
-    Update();
+    UpdateDisplay();
 
     while (true) {
         
@@ -29,18 +44,19 @@ int main()
         int choice = 0;
 
         std::cout << "\nwelcome to calculator.cpp, please enter a choice:\n";
-        std::cout << "1 new element\n2 replace element\n3 delete element\n4 resolve operation\n5 reset operation\n6 exit\n7 DEBUG MOLT\n\n";
+        std::cout << "1 new element\n2 replace element\n3 delete element\n4 resolve operation\n5 reset operation\n6 exit\n\n";
         std::cin >> choice;
         
-        InputHandler(choice, ogg);
+        InputHandler(choice, instance);
     }
     return 0;
 }
 
+
 void CalculatorDisplay() {
 
-    if (ogg.VNodes.size() > 0) {
-       while (size < ogg.VNodes.size()) {
+    if (instance.VNodes.size() > 0) {
+       while (size < instance.VNodes.size()) {
              while (temp1 >= 0) {                   //first line of * character based
                    std::cout << "*";
                    if (temp1 == 0) {
@@ -48,9 +64,9 @@ void CalculatorDisplay() {
                    }
                    temp1--;
              }
-             std::cout << ogg.VNodes[size].v_char << " ";           //numbers/operators prints
+             std::cout << instance.VNodes[size].v_char << " ";           //numbers/operators prints
              size++;
-             if (size == ogg.VNodes.size()) {
+             if (size == instance.VNodes.size()) {
                  std::cout << "*";
                  std::cout << "\n*";
                 }
@@ -69,14 +85,15 @@ void CalculatorDisplay() {
     
 }
 
-void Update() {
+
+void UpdateDisplay() {  //resets values to clean up the display and update it
     system("cls");
 
     temp1 = 1;
     temp2 = 1;
 
-    if (ogg.VNodes.size() > 0) {
-        for (auto& num : ogg.VNodes) {
+    if (instance.VNodes.size() > 0) {
+        for (auto& num : instance.VNodes) {
             temp1 += num.v_char.length() + 1;
             temp2 += num.v_char.length() + 1;
         }
@@ -84,99 +101,129 @@ void Update() {
     size = 0;
 }
 
-void InputHandler(int choice, CalculatorEng ogg) {
-    Update();
+
+void InputHandler(int choice, CalculatorEng instance) {
+    UpdateDisplay();
     CalculatorDisplay();
-
-
-    int type = 0;
-    int subtype = 0;
-    int value = 0;
-    int result = 0;
-    std::string inp;
 
     switch (choice) {
     case 1:
-        std::cout << "\n\nchoose an option:\n";
-        std::cout << "0  number\n1  operation\n";
-        std::cin >> type; if (type != 0 && type != 1) { std::cout << "enter a valid number\n"; system("pause"); break; }
-        if (type == 0) {
-            std::cout << "please enter a value: ";
-            std::cin >> value;
-            subtype = NULL;
-            ogg.addNode(type, subtype, value);
-            system("pause");
-        }
-        if (type == 1) {
-            std::cout << "\n\nchoose an option:\n";
-            std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
-            std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); break; }
-            value = NULL;
-            ogg.addNode(type, subtype, value);
-            system("pause");
-        }
 
+        InputAddNode();
         break;
 
     case 2:
-        int posr;
-        std::cout << "choose a position range: 0 - " << ogg.VNodes.size() - 1 << "\n";
-        std::cin >> posr; if(posr > ogg.VNodes.size() - 1 || posr < 0){ std::cout << "enter a valid position\n"; system("pause"); break; }
-
-        std::cout << "\n\nchoose an option:\n";
-        std::cout << "0  number\n1  operation\n";
-        std::cin >> type; if (type != 0 && type != 1) { std::cout << "enter a valid number\n"; system("pause"); break; }
-        if (type == 0) {
-            std::cout << "please enter a value: ";
-            std::cin >> value;
-            subtype = NULL;
-            ogg.replaceNode(posr, type, subtype, value);
-        }
-        if (type == 1) {
-            std::cout << "\n\nchoose an option:\n";
-            std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
-            std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); break; }
-            value = NULL;
-            ogg.replaceNode(posr, type, subtype, value);
-        }
+        
+        InputReplaceNode();
         break;
 
     case 3:
-        int pos;
-        std::cout << "\n\nchoose a position range: 0 - " << ogg.VNodes.size() - 1 << "\n";
-        std::cin >> pos; if (pos > ogg.VNodes.size() - 1 || pos < 0) { std::cout << "enter a valid position\n"; system("pause"); break; }
-        ogg.deleteNode(pos);
+        
+        InputDeleteNode();
         break;
 
     case 4:
-        result = ogg.resolveVect();
-        if (result == 2147483647) {
-            std::cout << "\n\nsyntax/math error\n";
-            system("pause");
-            break;
-        }
-        std::cout << "\n\nthe result is: " << result << " enter anything to continue\n";
-        system("pause");
+        
+        InputResolveVect();
         break;
 
     case 5:
-        ogg.resetVect();
-        std::cout << "\n\nDone!\n";
-        system("pause");
+
+        InputResetVect();
         break;
 
     case 6:
         exit(0);
         break;
 
-    case 7:
-        ogg.resolveVectMolt();
-        break;
-
     default:
-        std::cout << "\n please enter a valid number";
+        std::cout << "\n please enter a valid number\n";
         system("pause");
         break;
     }
-    Update();
+    UpdateDisplay();
+}
+
+
+void InputAddNode() {
+    int type = 0;       //input values used to create nodes
+    int subtype = 0;
+    int value = 0;
+
+    std::cout << "\n\nchoose an option:\n";
+    std::cout << "0  number\n1  operation\n";
+    std::cin >> type; if (type != 0 && type != 1) { std::cout << "enter a valid number\n"; system("pause"); return;; }
+
+    if (type == 0) {            //if node is a number it only needs a value
+        std::cout << "please enter a value: ";
+        std::cin >> value;
+        subtype = NULL;
+        instance.addNode(type, subtype, value);
+        system("pause");
+    }
+    if (type == 1) {        //if node is an operation input subtype
+        std::cout << "\n\nchoose an option:\n";
+        std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
+        std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); return; }
+        value = NULL;
+        instance.addNode(type, subtype, value);
+        system("pause");
+    }
+}
+
+
+void InputReplaceNode() {
+    int type = 0;       //input values used to create nodes
+    int subtype = 0;
+    int value = 0;
+    int pos; 
+
+    //basically the same as InputAddNodes(), only difference is that it takes a position to replace
+
+    std::cout << "choose a position range: 0 - " << instance.VNodes.size() - 1 << "\n";
+    std::cin >> pos; if (pos > instance.VNodes.size() - 1 || pos < 0) { std::cout << "enter a valid position\n"; system("pause"); return; }
+
+    std::cout << "\n\nchoose an option:\n";
+    std::cout << "0  number\n1  operation\n";
+    std::cin >> type; if (type != 0 && type != 1) { std::cout << "enter a valid number\n"; system("pause"); return; }
+
+    if (type == 0) {
+        std::cout << "please enter a value: ";
+        std::cin >> value;
+        subtype = NULL;
+        instance.replaceNode(pos, type, subtype, value);
+    }
+    if (type == 1) {
+        std::cout << "\n\nchoose an option:\n";
+        std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
+        std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); return; }
+        value = NULL;
+        instance.replaceNode(pos, type, subtype, value);
+    }
+}
+
+
+void InputDeleteNode() {        //takes a position for node deletion
+    int pos;
+    std::cout << "\n\nchoose a position range: 0 - " << instance.VNodes.size() - 1 << "\n";
+    std::cin >> pos; if (pos > instance.VNodes.size() - 1 || pos < 0) { std::cout << "enter a valid position\n"; system("pause"); return;; }
+    instance.deleteNode(pos);
+}
+
+
+void InputResolveVect() {                   //resolves vector and catches the error
+    int result = instance.resolveVect();
+    if (result == 2147483647) {                     //sloppy way of handling errors
+        std::cout << "\n\nsyntax/math error\n";
+        system("pause");
+    }
+    std::cout << "\n\nthe result is: " << result << " enter anything to continue\n";
+    system("pause");
+}
+
+
+void InputResetVect() {     //clears vect
+    instance.resetVect();
+    std::cout << "\n\nDone!\n";
+    system("pause");
 }

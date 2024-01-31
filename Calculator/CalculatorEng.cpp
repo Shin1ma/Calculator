@@ -3,16 +3,16 @@
 
 
 int CalculatorEng::VecLenght;
-std::vector<Node>CalculatorEng::VNodes;
+std::vector<Node>CalculatorEng::VNodes;		//Vector of nodes (operation)
 
 CalculatorEng::CalculatorEng() {
 
-	VecLenght = -1 ;
+	VecLenght = -1 ;			//sloppy gets the job done, too much of the code of this shiz is based off on this
 }
 
 int CalculatorEng::getVecLenght() { return VecLenght; }
 
-void CalculatorEng::initNode(Node *node) {
+void CalculatorEng::initNode(Node *node) {			 //initialization, dependant on type and subtype or value assigns a char value to print
 	if (node->Type == OPERATION) {
 		switch (node->SubType)
 		{
@@ -46,8 +46,8 @@ void CalculatorEng::initNode(Node *node) {
 bool CalculatorEng::checkNode(Node node) {
 	
 	if (!(node.Init)) return false;
-	if (node.Position == 0) { //if vector lenght is 0 there is nothing to check for
-		if (node.Type == NUMBER) {		//only if its a number tho
+	if (node.Position == 0) { //if node is at pos 0 there is nothing to check for, it doesnt have any nodes nex to it
+		if (node.Type == NUMBER) {		//only if its a number tho, in an operation an operator cannot be the first element (no negative numbers in this yet)
 			return true;
 		}
 		else return false;
@@ -62,7 +62,7 @@ bool CalculatorEng::checkNode(Node node) {
 	}
 }
 
-void CalculatorEng::replaceNode(int pos, int type, int subtype, int value) {
+void CalculatorEng::replaceNode(int pos, int type, int subtype, int value) {	//practically creates a temporary node and inserts it at pos
 	if (pos > VecLenght || pos < 0) {
 		std::cout << "invalid position\n";
 		return;
@@ -78,16 +78,16 @@ void CalculatorEng::replaceNode(int pos, int type, int subtype, int value) {
 		VNodes[pos] = node;
 }
 
-void CalculatorEng::addNode(int type, int subtype, int value) {
+void CalculatorEng::addNode(int type, int subtype, int value) {		//adds a node in the vector
 	
-	Node node;
+	Node node;			//node to slide into the vector
 	node.Type = type;
 	node.SubType = subtype;
 	node.value = value;
 	node.Position = VecLenght + 1;
 
-	initNode(&node);
-	if (checkNode(node)) {
+	initNode(&node);			//initializes node (gives it a c_value)
+	if (checkNode(node)) {			//checks it for syntax errors and if nothing is wrong pushes it back
 		VNodes.push_back(node);
 		VecLenght += 1;
 	}
@@ -98,12 +98,12 @@ void CalculatorEng::addNode(int type, int subtype, int value) {
 	}
 }
 
-void CalculatorEng::deleteNode(int pos) {
+void CalculatorEng::deleteNode(int pos) {		//deletes a node at pos
 	VNodes.erase(VNodes.begin() + pos);
 	VecLenght -= 1;
 }
 
-void CalculatorEng::printVect() {
+void CalculatorEng::printVect() {			//prints vector, useless function was made during early stages to debug when there wasnt a display
 	int temp = 0;
 	if (VecLenght < 1) {
 		return;
@@ -114,9 +114,9 @@ void CalculatorEng::printVect() {
 	}
 }
 
-void CalculatorEng::resolveVectMolt() {
-	int temp;
-	Node resultnode;
+void CalculatorEng::resolveVectMolt() {				//this function is called in resolvevect() before resolving sums to give priority. Pretty much works by resolving the moltiplication, deleting and replacing.
+	int temp;			//handles while statement
+	Node resultnode;	//node to be placed
 	resultnode.Type = NUMBER;
 	temp = 0;
 
@@ -124,16 +124,16 @@ void CalculatorEng::resolveVectMolt() {
 		
 		if (VNodes[temp].Type == OPERATION) {
 			if (VNodes[temp].SubType == MOLTIPLICATION) {
-				resultnode.value = VNodes[temp - 1].value * VNodes[temp + 1].value;
-				resultnode.Position = temp - 1;
-				initNode(&resultnode);
-				VNodes.erase(VNodes.begin() + temp);
+				resultnode.value = VNodes[temp - 1].value * VNodes[temp + 1].value;		// A*B, in this case your at the operator position so you multiply the values of position pos - 1 and pos + 1
+				resultnode.Position = temp - 1;		//resulting node will be place in the position of the first moltiplication number
+				initNode(&resultnode);		//initializes node
+				VNodes.erase(VNodes.begin() + temp);	//replacing and simplifing the nodes
 				VNodes.erase(VNodes.begin() + temp);
 				VNodes[temp - 1] = resultnode;
-				temp =- 1;
+				temp =- 1;			//now if temp goes +1 it wont be in the correct place anymore because we deleted two nodes, so we slow down
 				VecLenght -= 2;
 			}
-			else if (VNodes[temp].SubType == DIVISION) {
+			else if (VNodes[temp].SubType == DIVISION) {		//same thing
 				resultnode.value = VNodes[temp - 1].value / VNodes[temp + 1].value;
 				resultnode.Position = temp - 1;
 				initNode(&resultnode);
@@ -151,7 +151,7 @@ void CalculatorEng::resolveVectMolt() {
 
 int CalculatorEng::resolveVect() {
 
-	if (!(checkVect())) {
+	if (!(checkVect())) {		//checks whole vector for errors
 		return 2147483647;		//gonna process this as an error in main, pretty sloppy but gets the job done
 	}
 
@@ -159,11 +159,11 @@ int CalculatorEng::resolveVect() {
 		return 2147483647;		//gonna process this as an error in main, pretty sloppy but gets the job done
 	}
 
-	resolveVectMolt();
+	resolveVectMolt();		//moltiplication semplification
 
 	int ResVal = VNodes[0].value;
 	int temp = 0;
-	while (temp < VecLenght) {
+	while (temp < VecLenght) {		//simple algorithm adding/subtracting all the values in a sums only operation
 		if (VNodes[temp].SubType == ADDITION) {
 			ResVal += VNodes[temp + 1].value;
 		}
@@ -175,12 +175,12 @@ int CalculatorEng::resolveVect() {
 	return ResVal;
 }
 
-void CalculatorEng::resetVect() {
+void CalculatorEng::resetVect() {		//clears vect
 	VNodes.clear();
 	VecLenght = -1;
 }
 
-bool CalculatorEng::checkVect() {
+bool CalculatorEng::checkVect() {		//checks whole vector before resolving it for syntattic errors
 	int temp = 0;
 	int size = VNodes.size() - 1;
 	while (temp < size) {
