@@ -109,27 +109,27 @@ void InputHandler(int choice, CalculatorEng instance) {
     switch (choice) {
     case 1:
 
-        InputAddNode();
+        InputAddNode();    //adds node
         break;
 
     case 2:
         
-        InputReplaceNode();
+        InputReplaceNode(); //replaces a node
         break;
 
     case 3:
         
-        InputDeleteNode();
+        InputDeleteNode();  //deletes a node
         break;
 
     case 4:
         
-        InputResolveVect();
+        InputResolveVect(); //resolves vector
         break;
 
     case 5:
 
-        InputResetVect();
+        InputResetVect();   //resets vector
         break;
 
     case 6:
@@ -163,8 +163,9 @@ void InputAddNode() {
     }
     if (type == 1) {        //if node is an operation input subtype
         std::cout << "\n\nchoose an option:\n";
-        std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
-        std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); return; }
+        std::cout << "0  addition\n1  subtraction                   4 open bracket\n2  moltiplication                5 close bracket\n3  division\n\n";
+        std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3 && subtype != 4 && subtype != 5) { std::cout << "enter a valid number\n"; system("pause"); return; }
+        if (subtype == PRIORITYCLOSE || subtype == PRIORITYOPEN) type = PRIORITYOP;
         value = NULL;
         instance.addNode(type, subtype, value);
         system("pause");
@@ -195,8 +196,8 @@ void InputReplaceNode() {
     }
     if (type == 1) {
         std::cout << "\n\nchoose an option:\n";
-        std::cout << "0  addition\n1  subtraction\n2  moltiplication\n3  division\n";
-        std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3) { std::cout << "enter a valid number\n"; system("pause"); return; }
+        std::cout << "0  addition\n1  subtraction                   4 open bracket\n2  moltiplication                               5 close bracket\n3  division\n\n";
+        std::cin >> subtype; if (subtype != 0 && subtype != 1 && subtype != 2 && subtype != 3 && subtype != 4 && subtype != 5) { std::cout << "enter a valid number\n"; system("pause"); return; }
         value = NULL;
         instance.replaceNode(pos, type, subtype, value);
     }
@@ -212,7 +213,7 @@ void InputDeleteNode() {        //takes a position for node deletion
 
 
 void InputResolveVect() {                   //resolves vector and catches the error
-    int result = instance.resolveVect();
+    int result = instance.resolveVect(&instance.VNodes, false);
     if (result == 2147483647) {                     //sloppy way of handling errors
         std::cout << "\n\nsyntax/math error\n";
         system("pause");
